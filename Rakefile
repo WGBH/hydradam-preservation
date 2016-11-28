@@ -24,6 +24,8 @@ load 'rails/tasks/statistics.rake'
 
 require 'bundler/gem_tasks'
 
+require 'engine_cart/rake_task'
+
 require 'rake/testtask'
 
 Rake::TestTask.new(:test) do |t|
