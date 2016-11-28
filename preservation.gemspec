@@ -9,9 +9,8 @@ Gem::Specification.new do |s|
   s.version     = Preservation::VERSION
   s.authors     = ["Andrew Myers"]
   s.email       = ["afredmyers@gmail.com"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Preservation."
-  s.description = "TODO: Description of Preservation."
+  s.summary = "Preservation features for Hydra"
+  s.description = "Preservation features for Hydra"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
