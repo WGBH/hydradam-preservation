@@ -1,5 +1,7 @@
-require "preservation/engine"
+require "preservation/engine" if defined? ::Rails
 
 module Preservation
-  # Your code goes here...
+  def self.root
+    File.expand_path('../../', __FILE__)
+  end
 end
