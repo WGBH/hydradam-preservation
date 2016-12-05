@@ -1,28 +1,5 @@
-# Preservation
-Short description and motivation.
+![Travis Build Status](https://travis-ci.org/WGBH/hydradam-preservation.svg?branch=master)
 
-## Usage
-How to use my plugin.
+# Hydradam Preservation
 
-## Installation
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'preservation'
-```
-
-And then execute:
-```bash
-$ bundle
-```
-
-Or install it yourself as:
-```bash
-$ gem install preservation
-```
-
-## Contributing
-Contribution directions go here.
-
-## License
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+Gem for adding preservation functionality to an existing Hydra head.

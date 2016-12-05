@@ -29,6 +29,10 @@ module Preservation
         fcrepo_wrapper_instance.start
       end
 
+      def wrap(&block)
+        fcrepo_wrapper_instance.wrap(&block)
+      end
+
       private
 
       def fcrepo_wrapper_instance

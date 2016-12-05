@@ -12,3 +12,5 @@ require 'engine_cart/rake_task'
 Dir.glob(File.expand_path('../lib/tasks/**/*.rake', __FILE__)) do |file|
   load file
 end
+
+task :default => [:ci]

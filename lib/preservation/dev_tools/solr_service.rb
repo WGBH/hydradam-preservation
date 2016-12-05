@@ -34,6 +34,10 @@ module Preservation
         puts "Solr collection existence verified."
       end
 
+      def wrap(&block)
+        solr_wrapper_instance.wrap(&block)
+      end
+
       private
 
       def solr_wrapper_instance
