@@ -1,6 +1,7 @@
 # Default configuration for solr_wrapper in development environment
 instance_dir: tmp/solr-development
 port: 8983
+verbose: true
 collection:
   persist: true
   # dir: .internal_test_app/solr/config/
