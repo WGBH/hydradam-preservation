@@ -5,6 +5,7 @@ require File.expand_path('../../.internal_test_app/config/environment', __FILE__
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'spec_helper'
 require 'rspec/rails'
+require 'support/factory_girl'
 require 'engine_cart'
 
 EngineCart.load_application!

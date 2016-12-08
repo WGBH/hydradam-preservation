@@ -1,4 +1,5 @@
 require "preservation/engine" if defined? ::Rails
+require 'curation_concerns'
 
 module Preservation
   def self.root
