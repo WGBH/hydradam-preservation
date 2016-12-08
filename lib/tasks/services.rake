@@ -1,18 +1,8 @@
-require 'preservation/service_support'
+require 'preservation/service_environment'
 
 namespace :services do
   task :start, [:env] do |t, args|
     env = args[:env] || 'development'
-    Preservation::ServiceSupport.new(env: env).start
-  end
-
-  task :stop, [:env] do |t, args|
-    env = args[:env] || 'development'
-    Preservation::ServiceSupport.new(env: env).stop
-  end
-
-  task :restart, [:env] do |t, args|
-    env = args[:env] || 'development'
-    Preservation::ServiceSupport.new(env: env).restart
+    Preservation::ServiceEnvironment.new(env).start
   end
 end
