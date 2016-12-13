@@ -4,5 +4,5 @@ port: 8983
 verbose: true
 collection:
   persist: true
-  # dir: .internal_test_app/solr/config/
+  dir: .internal_test_app/solr/config/
   name: hydra-development
