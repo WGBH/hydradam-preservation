@@ -7,6 +7,7 @@ require 'spec_helper'
 require 'rspec/rails'
 require 'support/factory_girl'
 require 'engine_cart'
+require 'pry'
 
 EngineCart.load_application!
 
