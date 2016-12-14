@@ -17,6 +17,9 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
   s.add_dependency "curation_concerns", "~> 1.6.3"
+  # TODO: We can remove the pinned jquery-ui-rails dep here after upgrading to
+  # curation_concerns 1.7.0
+  s.add_dependency "jquery-ui-rails", "~> 5.0.5"
 
   s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'rspec-rails'

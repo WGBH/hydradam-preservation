@@ -41,6 +41,3 @@ else
   end
 end
 # END ENGINE_CART BLOCK
-
-gem 'pry-rails'
-gem 'pry-byebug'
