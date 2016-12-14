@@ -2,5 +2,5 @@
 instance_dir: tmp/solr-test
 port: 8985
 collection:
-  # dir: .internal_test_app/solr/config/
+  dir: .internal_test_app/solr/config/
   name: hydra-test
