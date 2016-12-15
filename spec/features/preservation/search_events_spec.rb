@@ -10,10 +10,14 @@ describe 'Preservation Events search page' do
       expect(page).to have_css('li.document', count: 10)
     end
 
-    xit 'displays the PREMIS type for the title' do
+    it 'displays the PREMIS event type label for the title' do
+      # Make a regex that checks for any PREMIS event type label.
+      regex = /(#{Preservation::Event.premis_event_types.map(&:label).join('|')})/
+      expect(page).to have_css('h4.index_title a', text: regex)
     end
 
     it 'displays the PREMIS agent' do
+      # TODO: avoid using hardcoded dynamic solr suffix here
       expect(page).to have_css('dt.blacklight-premis_agent_ssim', count: 10)
     end
 

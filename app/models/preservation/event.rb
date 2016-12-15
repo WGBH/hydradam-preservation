@@ -16,14 +16,31 @@ module Preservation
       EventIndexer
     end
 
+    # Comprehensive list of all PREMIS event types.
     def self.premis_event_types
-      @premis_event_types ||= begin
-        {}.tap do |premis_event_types|
-          [:cap, :com, :cre, :dea, :dec, :del, :der, :dig, :fix, :ing, :mes,
-            :mig, :nor, :rep, :val, :vir].each do |type|
-            premis_event_types[type] = ::RDF::Vocab::PremisEventType.send(type)
-          end
-        end
+      @premis_event_types = [
+        PremisEventType.new('cap', 'PREMIS Capture'),
+        PremisEventType.new('com', 'PREMIS Compression'),
+        PremisEventType.new('cre', 'PREMIS Creation'),
+        PremisEventType.new('dea', 'PREMIS Deaccession'),
+        PremisEventType.new('dec', 'PREMIS Decryption'),
+        PremisEventType.new('del', 'PREMIS Deletion'),
+        PremisEventType.new('dig', 'PREMIS Digital Signature Validation'),
+        PremisEventType.new('fix', 'PREMIS Fixity Check'),
+        PremisEventType.new('ing', 'PREMIS Ingestion'),
+        PremisEventType.new('mes', 'PREMIS Message Digest Calculation'),
+        PremisEventType.new('mig', 'PREMIS Migration'),
+        PremisEventType.new('nor', 'PREMIS Normalization'),
+        PremisEventType.new('rep', 'PREMIS Replication'),
+        PremisEventType.new('val', 'PREMIS Validation'),
+        PremisEventType.new('vir', 'PREMIS Virus Check')
+      ]
+    end
+
+    # Fetch a PREMIS event type given it's abbreviation, label, or URI.
+    def self.premis_event_type(abbr_or_label_or_uri)
+      premis_event_types.each do |premis_event_type|
+        return premis_event_type if [premis_event_type.abbr, premis_event_type.label, premis_event_type.uri].include?(abbr_or_label_or_uri)
       end
     end
   end
