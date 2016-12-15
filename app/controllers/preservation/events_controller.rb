@@ -40,7 +40,7 @@ module Preservation
       config.index.document_presenter_class = EventPresenter
 
       # TODO: Do not rely on dynamic suffixes here. Use Solrizer?
-      config.index.title_field = :premis_event_type_tesim
+      config.index.title_field = :premis_event_type_ssim
       config.add_index_field :premis_event_related_object, label: "File"
       config.add_index_field :premis_event_date_time_ltsi, label: "Date", helper_method: :display_premis_event_date_time
       config.add_index_field :premis_agent_tesim, label: "Agent", helper_method: :display_premis_agent
