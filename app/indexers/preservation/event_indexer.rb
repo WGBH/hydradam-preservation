@@ -44,11 +44,11 @@ module Preservation
                              object.premis_event_date_time.first,
                              :stored_searchable)
 
-            # Index the PREMIS event date time as an integer, for range queries.
-            Solrizer.set_field(solr_doc,
-                               'premis_event_date_time_integer',
-                               object.premis_event_date_time.first.strftime('%Y%m%d').to_i,
-                               Solrizer::Descriptor.new(:long, :stored, :indexed))
+          # Index the PREMIS event date time as an integer, for range queries.
+          Solrizer.set_field(solr_doc,
+                             'premis_event_date_time_integer',
+                             object.premis_event_date_time.first.strftime('%Y%m%d').to_i,
+                             Solrizer::Descriptor.new(:long, :stored, :indexed))
         end
       end
     end

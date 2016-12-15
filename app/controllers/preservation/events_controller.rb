@@ -18,6 +18,8 @@ module Preservation
     helper ComponentHelper
     # Override CurationConcerns::UrlHelper#url_for_document
     helper_method :url_for_document
+    helper_method :display_premis_agent
+    helper_method :display_premis_event_date_time
 
     # Adds CurationConcerns behaviors to the application controller.
     include CurationConcerns::ApplicationControllerBehavior
@@ -39,16 +41,15 @@ module Preservation
       config.search_builder_class = EventsSearchBuilder
       config.index.document_presenter_class = EventPresenter
 
-      # TODO: Do not rely on dynamic suffixes here. Use Solrizer?
-      config.index.title_field = :premis_event_type_ssim
+      config.index.title_field = solr_name(:premis_event_type, :symbol)
       config.add_index_field :premis_event_related_object, label: "File"
-      config.add_index_field :premis_event_date_time_ltsi, label: "Date", helper_method: :display_premis_event_date_time
-      config.add_index_field :premis_agent_tesim, label: "Agent", helper_method: :display_premis_agent
+      config.add_index_field solr_name(:premis_event_date_time, :stored_searchable, type: :date), label: "Date", helper_method: :display_premis_event_date_time
+      config.add_index_field solr_name(:premis_agent, :symbol), label: "Agent", helper_method: :display_premis_agent
 
       # Facet config
       config.add_facet_fields_to_solr_request!
       config.add_facet_field :premis_event_date_time_ltsi, label: 'Date', range: { segments: false }
-      config.add_facet_field :premis_event_type_tesim, label: 'Type'
+      config.add_facet_field solr_name(:premis_event_type, :symbol), label: 'Type'
     end
 
     # Overrides CatalogController::UrlHelper#url_for_document. It would be
@@ -60,6 +61,18 @@ module Preservation
     # change this one accordingly.
     def url_for_document(doc, _options = {})
       polymorphic_path([preservation, doc])
+    end
+
+    def display_premis_agent(opts={})
+      solr_doc = opts[:document]
+      premis_agent_mailto_uri = solr_doc[opts[:field]]
+      premis_agent_mailto_uri.first.sub(/^mailto\:/, '')
+    end
+
+    def display_premis_event_date_time(opts={})
+      solr_doc = opts[:document]
+      premis_event_date_time = solr_doc[opts[:field]]
+      Date.parse(premis_event_date_time.to_s).strftime('%Y-%m-%d')
     end
   end
 end
