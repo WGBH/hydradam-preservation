@@ -6,6 +6,16 @@ module Preservation
         # may be removed after require those fields with validations on the
         # model.
 
+        if object.premis_event_related_object
+          # Index the PREMIS event type.
+          # NOTE: the value we index is only the last URI segment, which is a
+          # 3-letter abbreviation.
+          Solrizer.set_field(solr_doc,
+                             'related_file_title',
+                             object.premis_event_related_object.label,
+                             :stored_searchable)
+        end
+
         unless object.premis_event_type.empty?
           # Index the PREMIS event type.
           # NOTE: the value we index is only the last URI segment, which is a

@@ -18,6 +18,7 @@ module Preservation
     helper_method :url_for_document
     helper_method :display_premis_agent
     helper_method :display_premis_event_date_time
+    helper_method :display_related_file
 
     # Adds CurationConcerns behaviors to the application controller.
     include CurationConcerns::ApplicationControllerBehavior
@@ -42,7 +43,7 @@ module Preservation
       # Index view config
       config.index.document_presenter_class = EventIndexPresenter
       config.index.title_field = solr_name(:premis_event_type, :symbol)
-      config.add_index_field :premis_event_related_object, label: "File"
+      config.add_index_field solr_name(:hasEventRelatedObject, :symbol), label: "File", helper_method: :display_related_file
       config.add_index_field solr_name(:premis_event_date_time, :stored_searchable, type: :date), label: "Date", helper_method: :display_premis_event_date_time
       config.add_index_field solr_name(:premis_agent, :symbol), label: "Agent", helper_method: :display_premis_agent
 
@@ -86,6 +87,14 @@ module Preservation
       solr_doc = opts[:document]
       premis_event_date_time = solr_doc[opts[:field]]
       Date.parse(premis_event_date_time.to_s).strftime('%Y-%m-%d')
+    end
+
+    def display_related_file(opts={})
+      # TODO: use Solrizer.solr_name instead of hardcoding dynamic suffixes.
+      # TODO: Would like to use a helper method like #link_to
+      # TODO: Are there URL helpers for FileSets here?
+      solr_doc = opts[:document]
+      "<a href='files/#{solr_doc[:hasEventRelatedObject_ssim].first}'>#{solr_doc[:related_file_title_tesim].first}</a>".html_safe
     end
   end
 end

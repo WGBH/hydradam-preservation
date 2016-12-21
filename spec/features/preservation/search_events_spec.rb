@@ -25,5 +25,9 @@ describe 'Preservation Events search page' do
       # TODO: avoid using hardcoded dynamic solr suffix here
       expect(page).to have_css('dt.blacklight-premis_event_date_time_dtsim', count: 10)
     end
+
+    it 'displays a link to the file' do
+      expect(page).to have_link('Example File', count: 10)
+    end
   end
 end
