@@ -1,5 +1,5 @@
 module Preservation
-  class EventPresenter < Blacklight::IndexPresenter
+  class EventIndexPresenter < Blacklight::IndexPresenter
     def label(field, opts = {})
       Event.premis_event_type(document.first(field)).label
     end

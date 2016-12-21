@@ -37,11 +37,11 @@ module Preservation
       ]
     end
 
-    # Fetch a PREMIS event type given it's abbreviation, label, or URI.
+    # Return a PremisEventType given it's abbreviation, label, or URI.
     def self.premis_event_type(abbr_or_label_or_uri)
-      premis_event_types.each do |premis_event_type|
-        return premis_event_type if [premis_event_type.abbr, premis_event_type.label, premis_event_type.uri].include?(abbr_or_label_or_uri)
-      end
+      premis_event_types.select do |premis_event_type|
+        [premis_event_type.abbr.to_sym, premis_event_type.abbr, premis_event_type.label, premis_event_type.uri].include?(abbr_or_label_or_uri)
+      end.first
     end
   end
 end
