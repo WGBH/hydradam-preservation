@@ -48,7 +48,12 @@ module Preservation
 
       # Show view config
       config.show.document_presenter_class = EventShowPresenter
+      config.add_show_field solr_name(:premis_agent, :symbol), label: "PREMIS Agent"
+      config.add_show_field solr_name(:premis_event_date_time, :stored_searchable, type: :date), label: "Date"
 
+      # Remove unused actions from the show view. Enabling these breaks the
+      # show view because Blacklight generates urls that don't exist. Figuring
+      # out how to make them work will take more digging.
       config.show.document_actions.delete(:bookmark)
       config.show.document_actions.delete(:email)
       config.show.document_actions.delete(:sms)
