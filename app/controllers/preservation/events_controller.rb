@@ -61,7 +61,7 @@ module Preservation
 
       # Facet config
       config.add_facet_fields_to_solr_request!
-      config.add_facet_field :premis_event_date_time_ltsi, label: 'Date', range: { segments: false }
+      # config.add_facet_field :premis_event_date_time_ltsi, label: 'Date', range: { segments: false }
       config.add_facet_field solr_name(:premis_event_type, :symbol), label: 'Type'
     end
 
