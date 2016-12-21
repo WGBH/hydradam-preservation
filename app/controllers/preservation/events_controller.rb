@@ -1,6 +1,3 @@
-# require 'preservation/events_search_builder'
-# require 'preservation/event_presenter'
-
 module Preservation
   class EventsController < ActionController::Base
     include Blacklight::Controller
@@ -16,6 +13,7 @@ module Preservation
     # include them.
     helper CatalogHelper
     helper ComponentHelper
+    helper LayoutHelper
     # Override CurationConcerns::UrlHelper#url_for_document
     helper_method :url_for_document
     helper_method :display_premis_agent
@@ -38,13 +36,23 @@ module Preservation
     end
 
     configure_blacklight do |config|
-      config.search_builder_class = EventsSearchBuilder
-      config.index.document_presenter_class = EventPresenter
 
+      config.search_builder_class = EventsSearchBuilder
+
+      # Index view config
+      config.index.document_presenter_class = EventIndexPresenter
       config.index.title_field = solr_name(:premis_event_type, :symbol)
       config.add_index_field :premis_event_related_object, label: "File"
       config.add_index_field solr_name(:premis_event_date_time, :stored_searchable, type: :date), label: "Date", helper_method: :display_premis_event_date_time
       config.add_index_field solr_name(:premis_agent, :symbol), label: "Agent", helper_method: :display_premis_agent
+
+      # Show view config
+      config.show.document_presenter_class = EventShowPresenter
+
+      config.show.document_actions.delete(:bookmark)
+      config.show.document_actions.delete(:email)
+      config.show.document_actions.delete(:sms)
+      config.show.document_actions.delete(:citation)
 
       # Facet config
       config.add_facet_fields_to_solr_request!
