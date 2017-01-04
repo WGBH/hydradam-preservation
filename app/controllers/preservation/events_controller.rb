@@ -51,6 +51,7 @@ module Preservation
       config.show.document_presenter_class = EventShowPresenter
       config.add_show_field solr_name(:premis_agent, :symbol), label: "PREMIS Agent"
       config.add_show_field solr_name(:premis_event_date_time, :stored_searchable, type: :date), label: "Date"
+      config.add_show_field solr_name(:hasEventRelatedObject, :symbol), label: "File", helper_method: :display_related_file
 
       # Remove unused actions from the show view. Enabling these breaks the
       # show view because Blacklight generates urls that don't exist. Figuring

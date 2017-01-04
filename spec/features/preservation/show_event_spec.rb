@@ -19,4 +19,8 @@ describe 'Preservation Events details page' do
     it 'displays the date' do
       expect(page).to have_text('2014-01-16')
     end
+
+    it 'displays the related file' do
+      expect(page).to have_link('Example File')
+    end
 end
