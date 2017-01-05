@@ -91,11 +91,13 @@ module Preservation
     end
 
     def display_related_file(opts={})
-      # TODO: use Solrizer.solr_name instead of hardcoding dynamic suffixes.
-      # TODO: Would like to use a helper method like #link_to
-      # TODO: Are there URL helpers for FileSets here?
+      # TODO: Is there a better way than having the controller send back HTML?
+      # TODO: Is there a better way to fetch the FileSet ID and Title? This way is confusing.
       solr_doc = opts[:document]
-      "<a href='files/#{solr_doc[:hasEventRelatedObject_ssim].first}'>#{solr_doc[:related_file_title_tesim].first}</a>".html_safe
+      file_set_id = solr_doc[:hasEventRelatedObject_ssim].first
+      file_set_url = Rails.application.routes.url_helpers.curation_concerns_file_set_url(id: file_set_id, only_path: true)
+      file_set_title = solr_doc[Solrizer.solr_name(:related_file_title, :stored_searchable)].first
+      "<a href='#{file_set_url}'>#{file_set_title}</a>".html_safe
     end
   end
 end
