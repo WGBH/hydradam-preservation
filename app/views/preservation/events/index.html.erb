@@ -1,9 +1,9 @@
 <% provide :page_title, "#{application_name} Search Results" %>
 <% provide :page_class, 'search' %>
 
-<div id="sidebar" class="<%= sidebar_classes %>">
+<% provide :sidebar do %>
   <%= render 'search_sidebar' %>
-</div>
+<% end %>
 
 <div id="content">
   <%= render 'search_results' %>
