@@ -2,17 +2,26 @@ module Preservation
   class EventsSearchBuilder < Blacklight::SearchBuilder
     include Blacklight::Solr::SearchBuilderBehavior
 
-    self.default_processor_chain += [:only_models_for_preservation_events, :apply_premis_event_date_time_range]
+    self.default_processor_chain += [:only_models_for_preservation_events, :apply_premis_event_date_time_filter_filter,
+                                     :apply_premis_event_type_filter]
 
     def only_models_for_preservation_events(solr_params)
       solr_params[:fq] ||= []
       solr_params[:fq] << "{!terms f=has_model_ssim}Preservation::Event"
     end
 
-    def apply_premis_event_date_time_range(solr_params)
-      if solr_date_time_range
+    def apply_premis_event_date_time_filter_filter(solr_params)
+      if premis_event_date_time_filter
         solr_params[:fq] ||= []
-        solr_params[:fq] << "premis_event_date_time_dtsim:[#{solr_date_time_range}]"
+        solr_params[:fq] << premis_event_date_time_filter
+      end
+      solr_params
+    end
+
+    def apply_premis_event_type_filter(solr_params)
+      if premis_event_type_filter
+        solr_params[:fq] ||= []
+        solr_params[:fq] << premis_event_type_filter
       end
       solr_params
     end
@@ -21,30 +30,40 @@ module Preservation
 
     # Returns a date/time range for a Solr query for the 'after' and 'before'
     # URL params.
-    def solr_date_time_range
-      @solr_date_time_range ||= begin
-        if solr_date_time_before || solr_date_time_after
-          "#{solr_date_time_after || '*'} TO #{solr_date_time_before || '*'}"
+    def premis_event_date_time_filter
+      @premis_event_date_time_filter ||= begin
+        if premis_event_date_time_before || premis_event_date_time_after
+          range = "#{premis_event_date_time_after || '*'} TO #{premis_event_date_time_before || '*'}"
+          "premis_event_date_time_dtsim:[#{range}]"
         end
       end
     end
 
     # Returns the 'before' date time formatted for a Solr query.
-    def solr_date_time_before
-      @solr_date_time_before ||= formatted_solr_date_time(blacklight_params['before'])
+    def premis_event_date_time_before
+      @premis_event_date_time_before ||= formatted_premis_event_date_time(blacklight_params['before'])
     end
 
     # Returns the 'after' date time formatted for a Solr query.
-    def solr_date_time_after
-      @solr_date_time_after ||= formatted_solr_date_time(blacklight_params['after'])
+    def premis_event_date_time_after
+      @premis_event_date_time_after ||= formatted_premis_event_date_time(blacklight_params['after'])
     end
 
     # Converts an unformatted date (as passed in via URL) to a date formatted
     # for a Solr query.
-    def formatted_solr_date_time(unformatted_date)
+    def formatted_premis_event_date_time(unformatted_date)
       DateTime.parse(unformatted_date.to_s).utc.strftime("%Y-%m-%dT%H:%M:%SZ")
     rescue ArgumentError => e
       nil
+    end
+
+    def premis_event_type_filter
+      @premis_event_type_filter ||= begin
+        if blacklight_params['premis_event_type']
+          valid_premis_abbrs = blacklight_params['premis_event_type'] & Preservation::Event.premis_event_types.map(&:abbr)
+          "(#{valid_premis_abbrs.map { |abbr| "premis_event_type_ssim:#{abbr}"}.join(" OR ")})"
+        end
+      end
     end
   end
 end
