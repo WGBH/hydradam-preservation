@@ -10,33 +10,41 @@ module Preservation
     end
 
     def apply_premis_event_date_time_range(solr_params)
-      solr_date_time_range(blacklight_params['after'], blacklight_params['before']).tap do |range|
-        if range
-          solr_params[:fq] ||= []
-          solr_params[:fq] << "premis_event_date_time_dtsim:[#{range}]"
-        end
+      if solr_date_time_range
+        solr_params[:fq] ||= []
+        solr_params[:fq] << "premis_event_date_time_dtsim:[#{solr_date_time_range}]"
       end
       solr_params
     end
 
     private
 
-    def solr_date_time_range(from_date, to_date)
-      solr_date_time_format = "%Y-%m-%dT%H:%M:%SZ"
-      from_date = begin
-        DateTime.parse(from_date.to_s).utc.strftime(solr_date_time_format)
-      rescue ArgumentError
-        nil
+    # Returns a date/time range for a Solr query for the 'after' and 'before'
+    # URL params.
+    def solr_date_time_range
+      @solr_date_time_range ||= begin
+        if solr_date_time_before || solr_date_time_after
+          "#{solr_date_time_after || '*'} TO #{solr_date_time_before || '*'}"
+        end
       end
+    end
 
-      to_date = begin
-        DateTime.parse(to_date.to_s).utc.strftime(solr_date_time_format)
-      rescue ArgumentError
-        nil
-      end
+    # Returns the 'before' date time formatted for a Solr query.
+    def solr_date_time_before
+      @solr_date_time_before ||= formatted_solr_date_time(blacklight_params['before'])
+    end
 
-      # Return formatted solr range only if either upper or lower bound are valid date times.
-      "#{from_date || '*'} TO #{to_date || '*'}" if (from_date || to_date)
+    # Returns the 'after' date time formatted for a Solr query.
+    def solr_date_time_after
+      @solr_date_time_after ||= formatted_solr_date_time(blacklight_params['after'])
+    end
+
+    # Converts an unformatted date (as passed in via URL) to a date formatted
+    # for a Solr query.
+    def formatted_solr_date_time(unformatted_date)
+      DateTime.parse(unformatted_date.to_s).utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+    rescue ArgumentError => e
+      nil
     end
   end
 end
