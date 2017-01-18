@@ -30,4 +30,16 @@ describe 'Preservation Events search page' do
       expect(page).to have_link('Example File', count: 10)
     end
   end
+
+  context 'filters' do
+    before { visit 'preservation/events' }
+
+    it 'has a search filter for date' do
+      expect(page).to have_css('form#date_time_range_filter')
+    end
+
+    it 'has a search filter for PREMIS event type' do
+      expect(page).to have_css('form#premis_event_type_filter')
+    end
+  end
 end
