@@ -1,8 +1,8 @@
 <h2>Date</h2>
 <form action="<%= preservation.events_url %>">
   <label>From</label>
-  <input name="after" />
+  <input name="after" value="<%= params['after'] %>" />
   <label>To</label>
-  <input name="before" />
+  <input name="before" value="<%= params['before'] %>" />
   <button type="submit">Submit</button>
 </form>
