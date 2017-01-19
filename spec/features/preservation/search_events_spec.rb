@@ -58,6 +58,9 @@ describe 'Preservation Events search results' do
     end
 
     it 'limits the results to those within the date range' do
+      # Here we manually filter out the set of records that fit within the
+      # selected date range in order to compare with the set of search results
+      # that should be filtered in the same way.
       records_within_date_range = @sample_data.records.select do |record|
         record.premis_event_date_time.first > DateTime.parse('2014-01-01') && record.premis_event_date_time.first < DateTime.parse('2015-01-01')
       end
@@ -65,6 +68,14 @@ describe 'Preservation Events search results' do
       records_within_date_range.each do |record|
         expect(page).to have_selector('dd', text: record.premis_event_date_time.first.year)
       end
+    end
+
+    it 'does not clobber other filters when new search params are submitted' do
+      visit "/preservation/events?premis_event_type[]=fix&premis_event_type[]=cap"
+      fill_in "after", with: "2014-01-01"
+      first("form#date_time_range_filter button[type='submit']").click
+      expect(page).to have_field("premis_event_type_fix", checked: true)
+      expect(page).to have_field("premis_event_type_cap", checked: true)
     end
   end
 
