@@ -1,9 +1,5 @@
 require 'factory_girl'
-
-# Load all factories from spec/factories.
-Dir.glob("#{File.expand_path('../../../spec/factories', __FILE__)}/**/*.rb").each do |factory_file|
-  load factory_file
-end
+require 'support/factory_girl'
 
 module Preservation
   class SampleData
@@ -18,6 +14,8 @@ module Preservation
       @records[-(count)..-1]
     end
 
+    # Calls #destroy on all objects in @records.
+    # NOTE: This may not delete associated objects.
     def destroy_all!
       @records.each do |record|
         record.destroy
