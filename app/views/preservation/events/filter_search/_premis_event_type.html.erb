@@ -6,7 +6,7 @@
   <% end %>
 
   <!-- TODO: This logic needs to be replicated for all filter forms. Better in a helper method? -->
-  <% Rack::Utils.parse_query(request.query_string).except("after", "before").each do |param, val| %>
+  <% Rack::Utils.parse_query(request.query_string).except("premis_event_type[]").each do |param, val| %>
     <% # Sometimes `val` may be an array, but not always. So we just array-ify
        # it here to cover both cases. %>
     <% Array(val).each do |single_val| %>
