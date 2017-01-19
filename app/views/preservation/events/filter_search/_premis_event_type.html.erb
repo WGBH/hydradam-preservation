@@ -1,13 +1,12 @@
 <h2>PREMIS Event Type</h2>
 <form id="premis_event_type_filter" action="<%= preservation.events_url %>">
   <% Preservation::Event.premis_event_types.each do |premis_event_type| %>
-    <!-- TODO:  -->
-    <input type="checkbox" name="premis_event_type[]" value="<%= premis_event_type.abbr %>" <%= Array(request.params['premis_event_type']).include?(premis_event_type.abbr) ? 'checked="checked"' : '' %>/>
-    <label><%= premis_event_type.label.sub(/^PREMIS/ , '') %></label>
+    <input type="checkbox" id="premis_event_type_<%= premis_event_type.abbr %>" name="premis_event_type[]" value="<%= premis_event_type.abbr %>" <%= Array(request.params['premis_event_type']).include?(premis_event_type.abbr) ? 'checked="checked"' : '' %>/>
+    <label for="premis_event_type_<%= premis_event_type.abbr %>"><%= premis_event_type.label.sub(/^PREMIS/ , '') %></label>
   <% end %>
 
   <!-- TODO: This logic needs to be replicated for all filter forms. Better in a helper method? -->
-  <% Rack::Utils.parse_query(URI.parse(request.query_string).query).except("premis_event_type[]").each do |param, val| %>
+  <% Rack::Utils.parse_query(request.query_string).except("premis_event_type[]").each do |param, val| %>
     <input type="hidden" name="<%= param %>" value="<%= val %>" />
   <% end %>
 

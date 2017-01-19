@@ -68,6 +68,53 @@ describe 'Preservation Events search results' do
     end
   end
 
+  context 'filtered by PREMIS event type' do
+    let(:all_premis_event_types) { Preservation::Event.premis_event_types }
+    let(:selected_premis_event_types) { all_premis_event_types.sample(4) }
+
+    before do
+      # NOTE: we include the `per_page` param and set it to a high number ot ensure we return
+      # all records from the sample data set. This helps us to know what to expect on the page
+      # without having to work around pagination.
+      url = "preservation/events?per_page=100&"
+      url += selected_premis_event_types.map { |t| "premis_event_type[]=#{t.abbr}" }.join('&')
+      visit url
+    end
+
+    it 'prepopulates input fields for PREMIS event type filter' do
+      # If a PREMIS event type is being used in the URL to filter search
+      # results, then expect it's checkbox to be checked in the filter form;
+      # otherwise do not.
+      all_premis_event_types.each do |premis_event_type|
+        if selected_premis_event_types.include? premis_event_type
+          expect(page).to have_field("premis_event_type_#{premis_event_type.abbr}", checked: true)
+        else
+          expect(page).to have_field("premis_event_type_#{premis_event_type.abbr}", checked: false)
+        end
+      end
+    end
+
+    it 'limits the results to those of the selected PREMIS event types' do
+      # Here we manually filter out the set of records that match the selected
+      # PREMIS even types in order to compare with the set of search results
+      # that should be filtered in the same way.
+      records_with_selected_premis_event_types = @sample_data.records.select do |record|
+        selected_premis_event_types.map(&:uri).include? record.premis_event_type.first.id
+      end
+
+      # For each of the manually filtered records, expect it to be found among
+      # the filtered search results.
+      records_with_selected_premis_event_types.each do |record|
+        expect(page).to have_selector('h4.index_title a', text: Preservation::Event.premis_event_type(record.premis_event_type.first.id).label)
+      end
+
+      # And ensure that none of the non-selected PREMIS event types show up
+      (all_premis_event_types - selected_premis_event_types).each do |unselected_premis_event_type|
+        expect(page).to_not have_selector('h4.index_title a', text: unselected_premis_event_type.label)
+      end
+    end
+  end
+
   after(:all) do
     @sample_data.records.each { |e| e.destroy }
   end
