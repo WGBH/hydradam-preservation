@@ -53,8 +53,8 @@ describe 'Preservation Events search results' do
     before { visit "preservation/events?after=2014-01-01&before=2015-01-01&per_page=100" }
 
     it 'prepopulates input fields for date range filter' do
-      expect(page).to have_selector('input[name="after"][value="2014-01-01"]')
-      expect(page).to have_selector('input[name="before"][value="2015-01-01"]')
+      expect(page).to have_field('after', with: '2014-01-01')
+      expect(page).to have_field('before', with: '2015-01-01')
     end
 
     it 'limits the results to those within the date range' do
@@ -70,10 +70,12 @@ describe 'Preservation Events search results' do
       end
     end
 
-    it 'does not clobber other filters when new search params are submitted' do
+    it 'does not clobber other filters when a new date range is submitted' do
+      # Visit the page with some values pre-selected for PREMIS event type filter.
       visit "/preservation/events?premis_event_type[]=fix&premis_event_type[]=cap"
-      fill_in "after", with: "2014-01-01"
+      # Submit the form for the date range filter
       first("form#date_time_range_filter button[type='submit']").click
+      # Ensure the PREMIS event type filters are still selected
       expect(page).to have_field("premis_event_type_fix", checked: true)
       expect(page).to have_field("premis_event_type_cap", checked: true)
     end
@@ -123,6 +125,15 @@ describe 'Preservation Events search results' do
       (all_premis_event_types - selected_premis_event_types).each do |unselected_premis_event_type|
         expect(page).to_not have_selector('h4.index_title a', text: unselected_premis_event_type.label)
       end
+    end
+
+    it 'does not clobber other filters when a new selection of premis event types are submitted' do
+      # Visit the search page with part of the date range filter pre-filled.
+      visit "/preservation/events?after=2014-01-01"
+      # Submit the PREMIS event type filter.
+      first("form#premis_event_type_filter button[type='submit']").click
+      # Expect the value from the date range filter to still be there.
+      expect(page).to have_field("after", with: "2014-01-01")
     end
   end
 
