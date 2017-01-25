@@ -1,11 +1,12 @@
 require 'rails_helper'
-require 'support/sample_data'
 
 describe 'Preservation Events search results' do
   before(:all) do
-    @sample_data = Preservation::SampleData.new.tap do |sample_data|
-      sample_data.create(:event, 12)
-    end
+    # Create some sample records before these tests.
+    # Sample records are deleted in `after(:all)` block at end of this spec.
+    # TODO: Create and delete sample records in a less ad-hoc way.
+    @sample_records = []
+    12.times { @sample_records << create(:event) }
   end
 
   context 'without URL parameters (default)' do
@@ -61,7 +62,7 @@ describe 'Preservation Events search results' do
       # Here we manually filter out the set of records that fit within the
       # selected date range in order to compare with the set of search results
       # that should be filtered in the same way.
-      records_within_date_range = @sample_data.records.select do |record|
+      records_within_date_range = @sample_records.select do |record|
         record.premis_event_date_time.first > DateTime.parse('2014-01-01') && record.premis_event_date_time.first < DateTime.parse('2015-01-01')
       end
 
@@ -111,7 +112,7 @@ describe 'Preservation Events search results' do
       # Here we manually filter out the set of records that match the selected
       # PREMIS even types in order to compare with the set of search results
       # that should be filtered in the same way.
-      records_with_selected_premis_event_types = @sample_data.records.select do |record|
+      records_with_selected_premis_event_types = @sample_records.select do |record|
         selected_premis_event_types.map(&:uri).include? record.premis_event_type.first.id
       end
 
@@ -137,7 +138,49 @@ describe 'Preservation Events search results' do
     end
   end
 
+  context 'filtered by PREMIS agent' do
+
+    # Generate a random email here to avoid conflicting with emails from other
+    # test records. TODO: this shouldn't be necessary if example records are
+    # being properly deleted after use.
+    let(:example_email) { "test#{rand(999)}@example.org" }
+
+    before do
+      # Create some sample records with a known PREMIS agent to test against
+      # filtered search results.
+      @expected_results = 2.times.map { create(:event, premis_agent_email: example_email) }
+
+      # Append these expected results to @sample_data so they get cleaned up
+      # after specs. TODO: Clean up sample records in a better way. Also, this
+      # may not actually be working.
+      @sample_records += @expected_results
+
+      # NOTE: we include the `per_page` param and set it to a high number ot ensure we return
+      # all records from the sample data set. This helps us to know what to expect on the page
+      # without having to work around pagination.
+      visit "preservation/events?per_page=100&agent=#{example_email}"
+    end
+
+    it 'prepopulates input field for PREMIS agent', :focus do
+      expect(page).to have_field('agent', with: example_email)
+    end
+
+    it 'limits the results to those that match the submitted filter value for PREMIS agent', :focus do
+      expect(page).to have_selector('dd', text: example_email, count: 2)
+    end
+
+    it 'does not clobber other filters when a new value is submitted for PREMIS agent' do
+      # Visit the search page with part of the date range filter pre-filled.
+      visit "/preservation/events?after=2014-01-01"
+      # Submit the PREMIS event type filter.
+      first("form#premis_agent_filter button[type='submit']").click
+      # Expect the value from the date range filter to still be there.
+      expect(page).to have_field("after", with: "2014-01-01")
+    end
+  end
+
+  # Delete all sample records created for this spec.
   after(:all) do
-    @sample_data.records.each { |e| e.destroy }
+    @sample_records.each { |record| record.destroy }
   end
 end
