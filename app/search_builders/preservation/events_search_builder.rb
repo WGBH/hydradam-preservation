@@ -3,7 +3,7 @@ module Preservation
     include Blacklight::Solr::SearchBuilderBehavior
 
     self.default_processor_chain += [:only_models_for_preservation_events, :apply_premis_event_date_time_filter_filter,
-                                     :apply_premis_event_type_filter]
+                                     :apply_premis_event_type_filter, :apply_premis_agent_filter]
 
     def only_models_for_preservation_events(solr_params)
       solr_params[:fq] ||= []
@@ -24,6 +24,13 @@ module Preservation
         solr_params[:fq] << premis_event_type_filter
       end
       solr_params
+    end
+
+    def apply_premis_agent_filter(solr_params)
+      if premis_agent_filter
+        solr_params[:fq] ||= []
+        solr_params[:fq] << premis_agent_filter
+      end
     end
 
     private
@@ -62,6 +69,15 @@ module Preservation
         if blacklight_params['premis_event_type']
           valid_premis_abbrs = blacklight_params['premis_event_type'] & Preservation::Event.premis_event_types.map(&:abbr)
           "(#{valid_premis_abbrs.map { |abbr| "premis_event_type_ssim:#{abbr}"}.join(" OR ")})"
+        end
+      end
+    end
+
+    def premis_agent_filter
+      @premis_agent_filter ||= begin
+        if blacklight_params['agent'].present?
+          # TODO: sanitize URL parameters. Do not simply trust user input.
+          "premis_agent_ssim:#{blacklight_params['agent']}"
         end
       end
     end
