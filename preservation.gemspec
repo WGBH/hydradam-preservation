@@ -13,7 +13,9 @@ Gem::Specification.new do |s|
   s.description = "Preservation features for Hydra"
   s.license     = "MIT"
 
-  s.files = Dir["{app,config,db}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  s.files.reject! { |f| f.match /ci\.rake/ }
+  s.files.reject! { |f| f.match /services\.rake/ }
 
   s.add_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
   s.add_dependency "curation_concerns", "~> 1.6.3"
