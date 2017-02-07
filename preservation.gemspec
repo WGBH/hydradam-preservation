@@ -13,7 +13,16 @@ Gem::Specification.new do |s|
   s.description = "Preservation features for Hydra"
   s.license     = "MIT"
 
+  # Specify files that ship with the gem.
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+
+  # Exclude specific files only needed when developing the gem.
+  s.files -= [
+    'lib/tasks/ci.rake',
+    'lib/tasks/services.rake',
+    'lib/demo.rb',
+    'lib/preservation_event_logger.rb'
+  ]
 
   s.add_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
   s.add_dependency "curation_concerns", "~> 1.6.3"
