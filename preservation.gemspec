@@ -16,12 +16,12 @@ Gem::Specification.new do |s|
   # Specify files that ship with the gem.
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
-  # Exclude specific files only needed when developing the gem.
+  # Exclude specific files that are only needed when developing the gem.
   s.files -= [
-    'lib/tasks/ci.rake',
-    'lib/tasks/services.rake',
-    'lib/demo.rb',
-    'lib/preservation_event_logger.rb'
+    'lib/tasks/preservation/ci.rake',
+    'lib/tasks/preservation/services.rake',
+    'lib/preservation/demo.rb',
+    'lib/preservation/preservation_event_logger.rb'
   ]
 
   s.add_dependency "rails", "~> 5.0.0", ">= 5.0.0.1"
