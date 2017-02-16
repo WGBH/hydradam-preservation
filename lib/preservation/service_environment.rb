@@ -1,6 +1,7 @@
 require 'preservation'
 require 'solr_wrapper'
 require 'fcrepo_wrapper'
+require 'active_support/core_ext/hash/keys'
 
 module Preservation
   class ServiceEnvironment
