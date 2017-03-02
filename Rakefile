@@ -4,13 +4,12 @@ rescue LoadError
   puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
 end
 
-load 'rails/tasks/statistics.rake'
 require 'bundler/gem_tasks'
+load 'rails/tasks/statistics.rake'
 require 'engine_cart/rake_task'
 
-# Load rake tasks defined in files under lib/tasks/ ending in '.rake'.
-Dir.glob(File.expand_path('../lib/tasks/**/*.rake', __FILE__)) do |file|
-  load file
-end
+# Load tasks for gem development
+Dir.glob('gem_development_rake_tasks/*.rake').each { |r| import r }
 
-task :default => ['preservation:ci']
+# Set the default rake task when developing this gem.
+task :default => ['ci']
