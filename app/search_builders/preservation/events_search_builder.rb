@@ -67,7 +67,7 @@ module Preservation
     def premis_event_type_filter
       @premis_event_type_filter ||= begin
         if blacklight_params['premis_event_type']
-          valid_premis_abbrs = blacklight_params['premis_event_type'] & Preservation::Event.premis_event_types.map(&:abbr)
+          valid_premis_abbrs = blacklight_params['premis_event_type'] & Preservation::PremisEventType.all.map(&:abbr)
           "(#{valid_premis_abbrs.map { |abbr| "premis_event_type_ssim:#{abbr}"}.join(" OR ")})"
         end
       end

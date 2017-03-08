@@ -8,7 +8,7 @@ module Preservation
     property :premis_agent, predicate: ::RDF::Vocab::PREMIS.hasAgent
     property :premis_event_date_time, predicate: ::RDF::Vocab::PREMIS.hasEventDateTime
     property :premis_event_outcome, predicate: ::RDF::Vocab::PREMIS.hasEventOutcome
-    property :premis_event_detail, predicate: ::RDF::Vocab::PREMIS.hasEventDetail   
+    property :premis_event_detail, predicate: ::RDF::Vocab::PREMIS.hasEventDetail
 
     def user_from_db
       @user_from_db ||= User.where(email: premis_agent)
@@ -16,34 +16,6 @@ module Preservation
 
     def self.indexer
       EventIndexer
-    end
-
-    # Comprehensive list of all PREMIS event types.
-    def self.premis_event_types
-      @premis_event_types = [
-        PremisEventType.new('cap', 'PREMIS Capture'),
-        PremisEventType.new('com', 'PREMIS Compression'),
-        PremisEventType.new('cre', 'PREMIS Creation'),
-        PremisEventType.new('dea', 'PREMIS Deaccession'),
-        PremisEventType.new('dec', 'PREMIS Decryption'),
-        PremisEventType.new('del', 'PREMIS Deletion'),
-        PremisEventType.new('dig', 'PREMIS Digital Signature Validation'),
-        PremisEventType.new('fix', 'PREMIS Fixity Check'),
-        PremisEventType.new('ing', 'PREMIS Ingestion'),
-        PremisEventType.new('mes', 'PREMIS Message Digest Calculation'),
-        PremisEventType.new('mig', 'PREMIS Migration'),
-        PremisEventType.new('nor', 'PREMIS Normalization'),
-        PremisEventType.new('rep', 'PREMIS Replication'),
-        PremisEventType.new('val', 'PREMIS Validation'),
-        PremisEventType.new('vir', 'PREMIS Virus Check')
-      ]
-    end
-
-    # Return a PremisEventType given it's abbreviation, label, or URI.
-    def self.premis_event_type(abbr_or_label_or_uri)
-      premis_event_types.select do |premis_event_type|
-        [premis_event_type.abbr.to_sym, premis_event_type.abbr, premis_event_type.label, premis_event_type.uri].include?(abbr_or_label_or_uri)
-      end.first
     end
   end
 end

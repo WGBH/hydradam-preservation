@@ -8,8 +8,8 @@ describe 'Preservation Events details page' do
     before { visit "preservation/events/#{preservation_event.id}" }
 
     it 'displays the PREMIS event type' do
-      premis_event_type_label = Preservation::Event.premis_event_type(preservation_event.premis_event_type.first.to_uri.to_s).label
-      expect(page).to have_text(premis_event_type_label)
+      premis_event_type = Preservation::PremisEventType.all.find { |premis_event_type| premis_event_type.uri == preservation_event.premis_event_type.first.to_uri.to_s }
+      expect(page).to have_text(premis_event_type.label)
     end
 
     it 'displays the PREMIS agent' do
