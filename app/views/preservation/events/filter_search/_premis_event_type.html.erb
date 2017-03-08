@@ -1,6 +1,6 @@
 <h2>PREMIS Event Type</h2>
 <form id="premis_event_type_filter" action="<%= preservation.events_url %>">
-  <% Preservation::Event.premis_event_types.each do |premis_event_type| %>
+  <% Preservation::PremisEventType.all.each do |premis_event_type| %>
     <input type="checkbox" id="premis_event_type_<%= premis_event_type.abbr %>" name="premis_event_type[]" value="<%= premis_event_type.abbr %>" <%= Array(request.params['premis_event_type']).include?(premis_event_type.abbr) ? 'checked="checked"' : '' %>/>
     <label for="premis_event_type_<%= premis_event_type.abbr %>"><%= premis_event_type.label.sub(/^PREMIS/ , '') %></label>
   <% end %>

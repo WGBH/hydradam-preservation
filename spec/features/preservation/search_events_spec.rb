@@ -18,7 +18,7 @@ describe 'Preservation Events search results' do
 
     it 'displays the PREMIS event type label for the title' do
       # Make a regex that checks for any PREMIS event type label.
-      regex = /(#{Preservation::Event.premis_event_types.map(&:label).join('|')})/
+      regex = /(#{Preservation::PremisEventType.all.map(&:label).join('|')})/
       expect(page).to have_css('h4.index_title a', text: regex)
     end
 
@@ -83,7 +83,7 @@ describe 'Preservation Events search results' do
   end
 
   context 'filtered by PREMIS event type' do
-    let(:all_premis_event_types) { Preservation::Event.premis_event_types }
+    let(:all_premis_event_types) { Preservation::PremisEventType.all }
     let(:selected_premis_event_types) { all_premis_event_types.sample(4) }
 
     before do
@@ -119,7 +119,11 @@ describe 'Preservation Events search results' do
       # For each of the manually filtered records, expect it to be found among
       # the filtered search results.
       records_with_selected_premis_event_types.each do |record|
-        expect(page).to have_selector('h4.index_title a', text: Preservation::Event.premis_event_type(record.premis_event_type.first.id).label)
+        expected_text = begin
+          premis_event_type = Preservation::PremisEventType.all.find { |premis_event_type| premis_event_type.uri == record.premis_event_type.first.id }
+          premis_event_type.label
+        end
+        expect(page).to have_selector('h4.index_title a', text: expected_text)
       end
 
       # And ensure that none of the non-selected PREMIS event types show up
