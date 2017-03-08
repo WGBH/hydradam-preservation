@@ -50,6 +50,12 @@ module Preservation
       result
     end
 
+    def self.find_by_abbr(abbr)
+      result = all.find { |record| record.abbr == abbr }
+      raise NotFound.new("PremisEventType with abbreviation \"#{abbr}\" was not found") unless result
+      result
+    end
+
     # Custom Error Classes
     class NotFound < StandardError; end
   end
