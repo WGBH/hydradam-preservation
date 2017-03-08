@@ -14,8 +14,22 @@ module Preservation
       @user_from_db ||= User.where(email: premis_agent)
     end
 
+    # @return [String] the label of the PREMIS event type that corresponds
+    #   with the URI from the first value of the #premis_event_type property.
+    def premis_event_type_label
+      premis_event_type_object.label
+    end
+
     def self.indexer
       EventIndexer
     end
+
+    private
+      # @return [Preservation::PremisEventType] first PremisEventType instance
+      #   found where Preservation::PremisEventType#uri matches first value
+      #   found in #premis_event_type property.
+      def premis_event_type_object
+        @premis_event_type_object ||= Preservation::PremisEventType.find_by_uri(premis_event_type.first.id)
+      end
   end
 end

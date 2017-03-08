@@ -21,4 +21,20 @@ describe Preservation::PremisEventType do
       end
     end
   end
+
+  describe '.find_by_uri' do
+    context 'when there is a corresponding instance that matches the URI passed in' do
+      let(:lookup_uri) { 'http://id.loc.gov/vocabulary/preservation/eventType/mes' }
+      it 'returns the instance' do
+        expect(Preservation::PremisEventType.find_by_uri(lookup_uri).uri.to_s).to eq lookup_uri
+      end
+    end
+
+    context 'when there is no corresponding record for the URI' do
+      let(:lookup_uri) { 'invalid-premis-event-type-uri' }
+      it 'raises a Preservation::PremisEventType::NotFound error' do
+        expect { Preservation::PremisEventType.find_by_uri(lookup_uri) }.to raise_error Preservation::PremisEventType::NotFound
+      end
+    end
+  end
 end
