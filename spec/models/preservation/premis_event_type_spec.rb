@@ -37,4 +37,20 @@ describe Preservation::PremisEventType do
       end
     end
   end
+
+  describe '.find_by_uri' do
+    context 'when there is a corresponding instance that matches the abbreviation passed in' do
+      let(:lookup_abbr) { 'cap' }
+      it 'returns the instance' do
+        expect(Preservation::PremisEventType.find_by_abbr(lookup_abbr).abbr).to eq lookup_abbr
+      end
+    end
+
+    context 'when there is no corresponding record for the abbreviation' do
+      let(:lookup_abbr) { 'blerg' }
+      it 'raises a Preservation::PremisEventType::NotFound error' do
+        expect { Preservation::PremisEventType.find_by_abbr(lookup_abbr) }.to raise_error Preservation::PremisEventType::NotFound
+      end
+    end
+  end
 end
