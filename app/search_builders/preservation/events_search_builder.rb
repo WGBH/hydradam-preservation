@@ -2,7 +2,7 @@ module Preservation
   class EventsSearchBuilder < Blacklight::SearchBuilder
     include Blacklight::Solr::SearchBuilderBehavior
 
-    self.default_processor_chain += [:only_models_for_preservation_events, :apply_premis_event_date_time_filter_filter,
+    self.default_processor_chain += [:only_models_for_preservation_events, :apply_premis_event_date_time_filter,
                                      :apply_premis_event_type_filter, :apply_premis_agent_filter]
 
     def only_models_for_preservation_events(solr_params)
@@ -10,7 +10,7 @@ module Preservation
       solr_params[:fq] << "{!terms f=has_model_ssim}Preservation::Event"
     end
 
-    def apply_premis_event_date_time_filter_filter(solr_params)
+    def apply_premis_event_date_time_filter(solr_params)
       if premis_event_date_time_filter
         solr_params[:fq] ||= []
         solr_params[:fq] << premis_event_date_time_filter

@@ -20,6 +20,10 @@ module Preservation
       premis_event_type_object.label
     end
 
+    def premis_event_type_abbr
+      premis_event_type_object.abbr
+    end
+
     def self.indexer
       EventIndexer
     end
