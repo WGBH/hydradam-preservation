@@ -38,7 +38,7 @@ describe Preservation::PremisEventType do
     end
   end
 
-  describe '.find_by_uri' do
+  describe '.find_by_abbr' do
     context 'when there is a corresponding instance that matches the abbreviation passed in' do
       let(:lookup_abbr) { 'cap' }
       it 'returns the instance' do
