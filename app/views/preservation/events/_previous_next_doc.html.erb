@@ -1,0 +1,29 @@
+<%
+# This is an override of a partial from Blacklight 6.7.3
+# in app/views/catalog/_previous_next_doc.html.erb.
+# See inline comment below for details of why the override is needed.
+%>
+
+<% #Using the Bootstrap Pagination class  -%>
+<% #DEPRECATED - using id="previousNextDocument" as a selector is deprecated and will be removed in Blacklight 6.0 %>
+<div id='previousNextDocument' class='pagination-search-widgets'>
+  <% if @previous_document || @next_document %>
+    <div class="page_links">
+      <%= link_to_previous_document @previous_document %> |
+
+      <%= item_page_entry_info %> |
+
+      <%= link_to_next_document @next_document %>
+    </div>
+  <% end %>
+  <% if current_search_session %>
+    <div class="pull-right search-widgets">
+      <%
+      # Calling #link_back_to_catalog here results in a routing error: no route matches "preservatio/catalog"
+      # Filed a detailed bug: https://github.com/projectblacklight/blacklight/issues/1647
+      # In the meantime, just skip the link back to the catalog.
+      %>
+      <%=link_to t('blacklight.search.start_over'), start_over_path(current_search_session.try(:query_params) || {}), id: 'startOverLink', class: 'btn' %>
+    </div>
+  <% end %>
+</div>
